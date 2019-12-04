@@ -127,7 +127,7 @@ save(updated_dendrogram, file="updated_dendrogram.RData")
 # Convert to a list
 # NOTE: Only some features of dendrogram can be converted to a list.  If this function 
 #       crashes, the "omit_names" variable may need to be updated
-dend_list <- dend_to_list(dend, omit_names = c("markers","markers.byCl","class"))
+dend_list <- dend_to_list(updated_dendrogram, omit_names = c("markers","markers.byCl","class"))
 
 # Save as a json file
 dend_JSON <- toJSON(dend_list, complex = "list", pretty = TRUE)
