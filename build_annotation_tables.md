@@ -7,7 +7,7 @@ Prior to running the scripts, the follow steps need to be performed.
 2. Install these libraries: `dplyr`, `dendextend`, and `ggplot2`.  
 3. *(Optional)* Install the `jsonlite` library if you want to save the final dendrogram in json format.
 4. Download `required_scripts.R` to your working directory.
-5. *(Optional)* Download `dend_humanMTG.RData` and `nomenclature_table_humanMTG.csv` if you want to use our example from human MTG.
+5. *(Optional)* Download `dend_humanMTG.RData` and `nomenclature_table_humanMTG.csv` if you want to use our example from human MTG and 5 additional cortical areas (see our [Allen Institute Transcriptomics Explorer](http://celltypes.brain-map.org/rnaseq/human)).
 6. *(Optional)* Download `build_annotation_tables.R`, which is an r script of this page.
 
 
