@@ -1,5 +1,5 @@
 # nomenclature
-This repository contains code to generate standardized cell type nomenclature from an R "dendrogram".  Our nomenclature schema is described in detail [on our website, here](http://confluence.corp.alleninstitute.org/pages/viewpage.action?pageId=69045259).  
+This repository contains code to generate standardized cell type nomenclature from an R "dendrogram".  Our nomenclature schema is described in detail [on our website, here](https://portal.brain-map.org/explore/classes/nomenclature).  
 
 **[CLICK HERE](https://github.com/AllenInstitute/allen_institute_nomenclature/blob/master/build_annotation_tables.md)** to get started, or download the `build_annotation_tables.r` file.
 
