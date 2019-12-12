@@ -1,7 +1,11 @@
 ######################################################################################
 ## MAIN NOMENCLATURE FUNCTION
 
-build_nomenclature_table <- function(dend, first_label = setNames("All",labels(dend)[1])){
+build_nomenclature_table <- function(
+   dend, 
+   first_label = setNames("All",labels(dend)[1]), 
+   taxonomy_id = "CS1910121")
+{
 
 # `first_label` is a named vector, where 
 #    the values correspond to labels (e.g., Neuron) and 
@@ -49,7 +53,7 @@ anno[!is_leaf,"cluster_id"] <- (num_clusters+1):dim(anno)[1]
 cs_digits = max(3,nchar(dim(anno)[1]))
 
 # Define cell_set_accession
-anno$cell_set_accession <- paste0(taxonomy_name,substr(10^cs_digits+anno$cluster_id,2,100)) 
+anno$cell_set_accession <- paste0(taxonomy_id,substr(10^cs_digits+anno$cluster_id,2,100)) 
 
 
 ################################################################
@@ -80,7 +84,7 @@ anno <- anno[,c("cell_set_accession","original_label","cell_set_label",
                 "cell_set_alias","cell_set_alt_alias")]
 rownames(anno) <- NULL
 anno <- anno[order(anno$cell_set_accession),]
-
+anno$taxonomy_id = taxonomy_id
 
 ################################################################
 ## Update the dendrogram with this new information
@@ -253,3 +257,4 @@ dend_to_list <- function(dend, omit_names = c("markers","markers.byCl","class"))
   }
   
 }
+
