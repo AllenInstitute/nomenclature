@@ -138,7 +138,7 @@ close(out)
 ```
 
 
-### Define cell to cell set mappings
+# Define cell to cell set mappings
 
 Up to this point the document describes how to apply the nomenclature schema to cell types and cell sets based on a hierarchical (or non-hierarchical) dendrogram.  This final section describes how cells within a data set can be mapped onto this nomenclature.  Doing this would better allow mapping of cells and cell sets between multiple taxonomies.  
 
