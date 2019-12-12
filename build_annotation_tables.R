@@ -2,11 +2,11 @@
 ################################################################
 ## Variable definitions
 
-# `taxonomy_name` is the name of the taxonomy in the format: <CS><YYMMDD><T>, where:
+# `taxonomy_id` is the name of the taxonomy in the format: <CS><YYMMDD><T>, where:
 #    CS stands for "cell set" and CT stands for "cell type"
 #    YYMMDD represents a 6 digit date format (Y=year, M=month, D=day)
 #    T is a 1-digit taxonomy counter, which allows up to 10 taxonomies on the same date
-taxonomy_name <- "CS1910121"
+taxonomy_id <- "CS1910121"
 
 # `first_label` is a named vector, where 
 #    the values correspond to labels (e.g., Neuron) and 
@@ -50,7 +50,7 @@ options(stringsAsFactors = FALSE)
 # This is done as a single line of code, but can also be run line by line if desired --
 #   in this case, see the "requiredScripts.R" file
 
-nomenclature_information <- build_nomenclature_table(dend, first_label)
+nomenclature_information <- build_nomenclature_table(dend, first_label, taxonomy_id)
 
 
 ################################################################
