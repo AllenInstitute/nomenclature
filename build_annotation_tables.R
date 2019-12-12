@@ -39,6 +39,7 @@ library(dplyr)
 library(dendextend)
 library(ggplot2)
 library(jsonlite)
+library(data.table)
 source("required_scripts.R")  # Additional required files
 options(stringsAsFactors = FALSE)
 
@@ -49,7 +50,7 @@ options(stringsAsFactors = FALSE)
 # This is done as a single line of code, but can also be run line by line if desired --
 #   in this case, see the "requiredScripts.R" file
 
-nomenclature_information <- build_nomenclature_table(dend)
+nomenclature_information <- build_nomenclature_table(dend, first_label)
 
 
 ################################################################
@@ -59,12 +60,14 @@ pdf("initial_dendrogram.pdf",height=8,width=15)
 plot_dend(nomenclature_information$initial_dendrogram, node_size=3)
 dev.off()
 
-write.csv(nomenclature_information$cell_set_information,"nomenclature_table.csv",row.names=FALSE)
+write.csv(nomenclature_information$cell_set_information,"nomenclature_table_initial.csv",row.names=FALSE)
 
 
 ################################################################
 ##   TEXT DISCUSSING MANUAL ANNOTATION OF ALIAS FIELDS HERE   ##
 ################################################################
+
+print("Add alt aliases to the table and then rename 'nomenclature_table.csv'.")
 
 
 ################################################################
@@ -99,3 +102,25 @@ dend_JSON <- toJSON(dend_list, complex = "list", pretty = TRUE)
 out <- file("dend.json", open = "w")
 writeLines(dend_JSON, out)
 close(out)
+
+
+################################################################
+## Read in cell meta-data and output a cell mapping table
+
+# Read in metadata and collect correct columns for sample name and cell set accession id
+metadata  <- read.csv("cell_metadata.csv")
+samples   <- metadata$sample_name
+
+# OPTION 1: COLUMN FOR ACCESSION ID ALREADY EXISTS
+# cell_id <- metadata$cell_type_accession_label
+
+# OPTION 2: NEED TO GENERATE COLUMN FROM DENDROGRAM LABELS
+label_col <- "cluster_label"  # Column name with dendrogram labels
+cell_id   <- updated_nomenclature[match(metadata[,label_col],updated_nomenclature$cell_set_alias),"cell_set_accession"]
+cell_id[is.na(cell_id)] = "none"
+
+# Perform the mapping
+mapping   <- cell_set_mapping_from_dendrogram(updated_dendrogram,samples,cell_id)
+
+# Output a csv of the mapping
+fwrite(mapping,"cell_mapping.csv")
