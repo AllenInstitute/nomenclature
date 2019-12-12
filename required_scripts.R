@@ -1,7 +1,16 @@
 ######################################################################################
 ## MAIN NOMENCLATURE FUNCTION
 
-build_nomenclature_table <- function(dend){
+build_nomenclature_table <- function(dend, first_label = setNames("All",labels(dend)[1])){
+
+# `first_label` is a named vector, where 
+#    the values correspond to labels (e.g., Neuron) and 
+#    the names correspond to the FIRST cluster label in the tree where that label should be used
+#    NOTE: this code assumes that all clusters of the same label will be in a single block in the dendrogram
+#    Here is an example
+#first_label <- setNames(
+#    c("Neuron",            "Non-neuron"),
+#    c("Inh L1 LAMP5 NDNF", "Astro L1-6 FGFR3 ETNPPL"))
 
 ################################################################
 ## Update the dendrogram labels
@@ -85,6 +94,9 @@ list(cell_set_information = anno, initial_dendrogram = dend_start, updated_dendr
 }
 
 
+######################################################################################
+## ADDITIONAL NOMENCLATURE FUNCTIONS
+
 update_dendrogram_with_nomenclature <- function(dend, cell_set_information, 
   current_label = "original_label", new_label = "cell_set_alias"){
 
@@ -104,6 +116,31 @@ update_dendrogram_with_nomenclature <- function(dend, cell_set_information,
   dend
 }
 
+
+cell_set_mapping_from_dendrogram <- function(dend,samples,cell_id,
+  mapping=NULL,continue=TRUE){  # DO NOT SET THESE LAST TWO VARIABLES
+
+  # Add the mapping for the current cell set
+  cell_set_id <- (dend %>% get_nodes_attr("cell_set_accession"))[1]
+  kp <- is.element(cell_id,dend %>% get_leaves_attr("cell_set_accession"))
+  if(sum(kp)>0){
+    newMapping  <- cbind(samples[kp],cell_set_id)
+    mapping     <- rbind(mapping,newMapping)
+  }
+  
+  # Recursively work through the dendrogram adding all mappings
+  if(length(dend)>1) 
+    for (i in 1:length(dend)){
+       mapping <- cell_set_mapping_from_dendrogram(dend[[i]],samples,cell_id,mapping,continue)
+  } else if(continue) {
+    continue <- FALSE
+    mapping  <- cell_set_mapping_from_dendrogram(dend,samples,cell_id,mapping,continue)
+  }
+  
+  # Return results
+  colnames(mapping) <- c("sample_name","cell_set_accession")
+  mapping
+}
 
 
 ######################################################################################
@@ -216,4 +253,3 @@ dend_to_list <- function(dend, omit_names = c("markers","markers.byCl","class"))
   }
   
 }
-
