@@ -35,7 +35,10 @@ options(stringsAsFactors = FALSE)
 `taxonomy_id` is the name of the taxonomy in the format: <CS><YYMMDD><T>, where:
 * CS stands for "cell set" and CT stands for "cell type"
 * YYMMDD represents a 6 digit date format (Y=year, M=month, D=day)
-* T is a 1-digit taxonomy counter, which allows up to 10 taxonomies on the same date
+* T is a 1-digit taxonomy counter, which allows up to 10 taxonomies on the same date  
+	
+**To keep taxonomy IDs unique, please select a taxonomy_id [NOT IN THIS TABLE](https://docs.google.com/spreadsheets/d/10gYNyOhc0YHOYKjgsvLfumf65CqLeiVDCE3Wrxz4Txo/edit?usp=sharing), and add your taxonomy_ID.**  Strategies for better tracking of taxonomy IDs are currently under consideration.  
+	
 `first_label` is a named vector, where 
 * the values correspond to labels (e.g., Neuron) and 
 * the names correspond to the FIRST cluster label in the tree where that label should be used
