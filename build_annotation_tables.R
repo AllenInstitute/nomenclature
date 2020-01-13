@@ -6,6 +6,12 @@
 #    CS stands for "cell set" and CT stands for "cell type"
 #    YYMMDD represents a 6 digit date format (Y=year, M=month, D=day)
 #    T is a 1-digit taxonomy counter, which allows up to 10 taxonomies on the same date
+
+# IMPORTANT NOTE: To keep taxonomy IDs unique, please select a taxonomy_id NOT IN THIS TABLE:
+#    https://docs.google.com/spreadsheets/d/10gYNyOhc0YHOYKjgsvLfumf65CqLeiVDCE3Wrxz4Txo/edit?usp=sharing 
+#    and add your taxonomy_ID.  Strategies for better tracking of taxonomy IDs are currently 
+#    under consideration. 
+
 taxonomy_id <- "CS1910121"
 
 # `first_label` is a named vector, where 
