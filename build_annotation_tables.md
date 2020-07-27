@@ -154,7 +154,7 @@ samples   <- metadata$sample_name
 # cell_id <- metadata$cell_type_accession_label
 
 # OPTION 2: NEED TO GENERATE COLUMN FROM DENDROGRAM LABELS
-label_col <- "cluster_joint"  # Column name with dendrogram labels
+label_col <- "cluster_label"  # Column name with dendrogram labels
 cell_id   <- updated_nomenclature[match(metadata[,label_col],updated_nomenclature$cell_set_alias),"cell_set_accession"]
 cell_id[is.na(cell_id)] = "none"
 
