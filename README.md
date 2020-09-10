@@ -1,5 +1,5 @@
 # nomenclature
-This repository contains code to generate standardized cell type nomenclature from an R "dendrogram".  Our nomenclature schema is described in detail [on our website, here](https://portal.brain-map.org/explore/classes/nomenclature).  
+This repository contains code to generate the standardized **Common Cell type Nomenclature (CCN)** from an R "dendrogram", as described in our manuscript currently soon to be resubmitted to eLife.  The initial version of the CCN is described in detail [on our website, here](https://portal.brain-map.org/explore/classes/nomenclature), with and updated version now available [on arXiv](https://arxiv.org/abs/2006.05406).  If you want to apply nomenclature of the format initiall described, please use the initial release.
 
 **[CLICK HERE](https://github.com/AllenInstitute/allen_institute_nomenclature/blob/master/build_annotation_tables.md)** to get started, or download the `build_annotation_tables.r` file.
 
