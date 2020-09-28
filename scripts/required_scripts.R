@@ -212,10 +212,12 @@ cell_assignment_from_groups_of_cell_types <- function(updated_nomenclature,cell_
   ## Find the corresponding cell types for those cell sets
   labsL <- list()
   cs_digits <- max(3,nchar(dim(updated_nomenclature)[1]))
-  for (i in 1:length(missed_labels)){
-    m   <- eval(parse(text=paste("c(",gsub("-",":",gsub(missed_class[i],"",missed_labels[i])),")")))
-    m   <- substr(10^cs_digits+m,2,100)
-    labsL[[missed_labels[i]]] <- paste(missed_class[i],m)
+  if (length(missed_labels)>0){
+    for (i in 1:length(missed_labels)){
+      m   <- eval(parse(text=paste("c(",gsub("-",":",gsub(missed_class[i],"",missed_labels[i])),")")))
+      m   <- substr(10^cs_digits+m,2,100)
+      labsL[[missed_labels[i]]] <- paste(missed_class[i],m)
+    }
   }
   
   ## Now annotate them!
