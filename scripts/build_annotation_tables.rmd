@@ -76,7 +76,7 @@ options(stringsAsFactors = FALSE)
 * YYYYMMDD represents an 8 digit date format (Y=year, M=month, D=day)
 * T is a 1-digit taxonomy counter, which allows up to 10 taxonomies on the same date  
   
-If more than 10 taxonomies are being generated on a single date, it is reasonable to increment or decrement the data by a day to ensure uniqueness of taxonomies.  More generally, to keep taxonomy IDs unique, **please select a taxonomy_id [NOT IN THIS TABLE](https://docs.google.com/spreadsheets/d/10gYNyOhc0YHOYKjgsvLfumf65CqLeiVDCE3Wrxz4Txo/edit?usp=sharing), and add your taxonomy_ID to the table as needed.**  Strategies for better tracking of taxonomy IDs are currently under consideration, including a Cell Type Taxonomony Service currently in development at the Allen Institute for the [Brain Initiative - Cell Census Network (BICCN)](https://biccn.org/) and a [Cell Annotation Platform (CAP)](https://github.com/kharchenkolab/cap-example/) under development as part of the [Human Cell Atlas](https://www.humancellatlas.org/).  
+If more than 10 taxonomies are being generated on a single date, it is reasonable to increment or decrement the data by a day to ensure uniqueness of taxonomies.  More generally, to keep taxonomy IDs unique, **please select a taxonomy_id [NOT IN THIS TABLE](https://docs.google.com/spreadsheets/d/10gYNyOhc0YHOYKjgsvLfumf65CqLeiVDCE3Wrxz4Txo/edit?usp=sharing), and add your taxonomy_ID to the table as needed.**  Strategies for better tracking of taxonomy IDs are currently under consideration , including a Cell Type Taxonomony Service currently in development for Allen Institute taxonomies, additional databasing options for the [Brain Initiative - Cell Census Network (BICCN)](https://biccn.org/), a [Cell Annotation Platform (CAP)](https://github.com/kharchenkolab/cap-example/) under development as part of the [Human Cell Atlas](https://www.humancellatlas.org/), and likely other options.  One future goal will be to centralize these tracking services and replace the above table.  
 	
 `taxonomy_author` is the name of a point person for this taxonomy (e.g., someone who is responsible for it's content).  This could either be the person who built the taxonomy, the person who uploaded the data, or the first or corresponding author on a relevant manuscript.  By default this person is the same for all cell_sets; however, there is opportunity to manually add additional aliases (and associated assignees and citations that may be different from the taxonomy_author) below.  
   
@@ -119,11 +119,11 @@ first_label <- setNames("MTG", 1)
 	
 ### Define anatomic structures  
 
-A new component of the CCN is the concept of an anatomic `structure`.  This represents the location in the brain (or body) from where the data in the taxonomy was collected.  Ideally this will be linked to a standard ontology via the `ontology_tag`.  In this case, we choose "neocortex" from ["UBERON"](http://uberon.github.io/) since UBERON is specifically designed to be a species-agnostic ontology and we are interested in building cross-species brain references.  It is worth noting that these structures can be defined separately for each cell set at a later step, but in the initial set-up only a single structure can be input for the entire taxonomy.  
+A new component of the CCN is the concept of an anatomic `structure`.  This represents the location in the brain (or body) from where the data in the taxonomy was collected.  Ideally this will be linked to a standard ontology via the `ontology_tag`.  In this case, we choose "middle temporal gyrus" from ["UBERON"](http://uberon.github.io/) since UBERON is specifically designed to be a species-agnostic ontology and we are interested in building cross-species brain references.  It is worth noting that these structures can be defined separately for each cell set at a later step, but in the initial set-up only a single structure can be input for the entire taxonomy.  
   
 ```{r}
-structure    = "neocortex"
-ontology_tag = "UBERON:0001950"  # or "none" if no tag is available.
+structure    = "middle temporal gyrus"
+ontology_tag = "UBERON:0002771"  # or "none" if no tag is available.
 ``` 	
 	
 	
@@ -168,7 +168,7 @@ The following columns are included in the `cell_set_information` table.  Most of
 * `cell_set_additional_aliases`^: Any additional aliases desired for a given cell set, separated by a "|".  For example, this allows inclusion of multiple historical names.  As output from `build_nomenclature_table`, this will be blank for all cell sets.  
 * `cell_set_structure`^: The structure, as described above.  Can be modified for specific cell sets below.  Multiple cell_set_structures can be given separated by a "|".  
 * `cell_set_ontology_tag`^: The ontology_tag, as described above.  Can be modified for specific cell sets below.  Multiple cell_set_ontology_tags can be given separated by a "|", and must match cell_set_structure above.
-* `cell_set_alias_assignee`: By default the taxonomy_author, as described above. In this case, if preferred (or other) aliases are assigned by a different person, additional assignees can be added by separating using a "|".  The format is |[preferred_alias_assignee]|[aligned_alias_assignee]|[additional_alias_assignee(s)] and if aliases are added with adding additional assignees it is assumed that the assignee is the same for all.  
+* `cell_set_alias_assignee`: By default the taxonomy_author, as described above. In this case, if aliases are assigned by different people, additional assignees can be added by separating using a "|".  The format is [preferred_alias_assignee]|[aligned_alias_assignee]|[additional_alias_assignee(s)].  If aliases are added without adding additional assignees it is assumed that the assignee is the same for all aliases.  
 * `cell_set_alias_citation`: By default the taxonomy_citation, as described above (or can be left blank). In this case, if preferred (or other) aliases are assigned based on a different citation, additional citations can be added by separating using a "|", with the same rules as described by cell_set_alias_assignee.  Ideally the DOI for the publication will be used (or another permanent link).  
 * `taxonomy_id`^: The taxonomy_id, as described above.  This should not be changed.  
   
