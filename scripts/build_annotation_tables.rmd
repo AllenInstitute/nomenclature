@@ -221,7 +221,8 @@ Once this file has been completed, save the result as a csv file, and continue w
 This file is the one just created above.  If needed change the link to the file below.  
   
 ```{r}
-updated_nomenclature <- read.csv("nomenclature_table_update.csv")
+# REPLACE THIS LINE OF CODE WITH CODE TO READ IN YOUR UPDATED NOMENCLATURE TABLE, IF NEEDED
+updated_nomenclature <- read.csv("nomenclature_table_MTG.csv")
 ```
   
   
@@ -275,7 +276,8 @@ Prior to assigning nomenclature to individual cells, we need to read in the meta
   
 ```{r} 
 # Read in metadata and collect correct columns for sample name and cell set accession id
-metadata  <- read.csv("data/cell_metadata.csv")
+# REPLACE THIS LINE OF CODE WITH CODE TO READ IN YOUR METADATA, IF NEEDED
+metadata  <- read.csv("data/cell_metadata_MTG.csv")
 samples   <- metadata$sample_name
 
 # OPTION 1: COLUMN FOR ACCESSION ID ALREADY EXISTS
