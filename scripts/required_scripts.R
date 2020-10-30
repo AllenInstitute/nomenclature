@@ -73,12 +73,13 @@ anno[labels(dend),"cell_set_preferred_alias"] <- labels(dend)
 num_clusters    <- length(labels(dend))
 is_leaf         <- is.element(rownames(anno),labels(dend))
 anno$cluster_id <- 0
-anno[labels(dend),"cluster_id"] <- 1:num_clusters
+#anno[labels(dend),"cluster_id"] <- 1:num_clusters  # Replaced with next line, which avoids error
+anno$cluster_id[rownames(anno) %in% labels(dend] <- 1:num_clusters   #replaces cluster_id=0 with sequential id
 anno[!is_leaf,"cluster_id"] <- (num_clusters+1):dim(anno)[1]
 cluster_id      <- anno$cluster_id
 
-# How many digits to use for cell set number (either 3 or as few as possible above 3)
-cs_digits = max(3,nchar(dim(anno)[1]))
+# How many digits to use for cell set number (as few as possible)
+cs_digits = max(1,nchar(dim(anno)[1]))
 
 # Define cell_set_accession
 anno$cell_set_accession <- paste0(taxonomy_id,"_",anno$cluster_id) #substr(10^cs_digits+anno$cluster_id,2,100)) 
@@ -131,8 +132,8 @@ anno <- anno[,c("cell_set_accession","original_label","cell_set_label",
 rownames(anno) <- NULL
 anno <- anno[order(cluster_id),]
 
-anno$cell_set_alias_assignee <- paste0(taxonomy_author,"||")
-anno$cell_set_alias_citation <- paste0(taxonomy_citation,"||")
+anno$cell_set_alias_assignee <- paste0(taxonomy_author)
+anno$cell_set_alias_citation <- paste0(taxonomy_citation)
 anno$taxonomy_id             <- taxonomy_id
 
 ################################################################
@@ -211,11 +212,11 @@ cell_assignment_from_groups_of_cell_types <- function(updated_nomenclature,cell_
 
   ## Find the corresponding cell types for those cell sets
   labsL <- list()
-  cs_digits <- max(3,nchar(dim(updated_nomenclature)[1]))
+  cs_digits <- max(1,nchar(dim(updated_nomenclature)[1]))
   if (length(missed_labels)>0){
     for (i in 1:length(missed_labels)){
-      m   <- eval(parse(text=paste("c(",gsub("-",":",gsub(missed_class[i],"",missed_labels[i])),")")))
-      m   <- substr(10^cs_digits+m,2,100)
+      m <- eval(parse(text=paste("c(",gsub("-",":",gsub(missed_class[i],"",missed_labels[i])),")")))
+      m <- substr(10^cs_digits+m,2,100)
       labsL[[missed_labels[i]]] <- paste(missed_class[i],m)
     }
   }
