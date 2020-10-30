@@ -133,7 +133,7 @@ As discussed above, we have provided a dendrogram of human MTG cell types (calle
 
 ```{r}
 # REPLACE THIS LINE OF CODE WITH CODE TO READ IN YOUR DENDROGRAM, IF NEEDED
-load("data/dend.RData")
+load("data/dend_MTG.RData")
 
 # Attempt to format dendrogram if the input is in a different format
 dend <- as.dendrogram(dend)
