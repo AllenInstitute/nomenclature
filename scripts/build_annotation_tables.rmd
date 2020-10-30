@@ -290,10 +290,15 @@ cell_id[is.na(cell_id)] = "none"
   
 ### Assign dendrogram cell sets
   
-Next, we want to automatically link each cell to each cell set *that is available in the dendrogram*.  This is done as a single line of code.  
+Next, we want to automatically link each cell to each cell set that is available in the dendrogram.  This is done as a single line of code (Option 1). *Note: if a dendrogram is not available, the `mapping` table can be set up using a single cell set using Option 2 below.*  
   
 ```{r} 
+# OPTION 1: START FROM A DENDROGRAM
 mapping   <- cell_assignment_from_dendrogram(updated_dendrogram,samples,cell_id)
+
+# OPTION 2: USE ONLY THE `updated_nomenclature` table
+#mapping <- data.frame(sample_name=samples, call=((cell_id==cell_id[1])+1-1))
+#colnames(mapping) <- c("sample_name",cell_id[1])
 ```  
   
 The result of this script is a data frame where the first columns corresponds to the cell `sample_name`.  This is the term used at the Allen Institute for a unique cell ID.  This ID is unique across **all data at the Allen Institute**.  In principle, a replacement (or additional) unique ID value could be added for importing into external databases.  The remaining columns corrspond to the probabilities of each cell mapping to each cell type (from the dendrogram).  In this case we define hard probabilities (0 = unassigned to cell set; 1 = assigned to cell set) but this could be adapted to reflect real probabilities calculated elsewhere.  
@@ -301,7 +306,7 @@ The result of this script is a data frame where the first columns corresponds to
   
 ### Assign cell type-based cell sets  
   
-This section assigns cell sets that were defined as combinations of cell types, but that were NOT included in the above function.  As written, this function requires `cell_assignment_from_dendrogram` to be run first and *it assumes that the `cell_set_label` is assigned using the specific format described above*.  In principle, this function could be lightly modified to run in place of `cell_assignment_from_dendrogram`.  
+This section assigns cell sets that were defined as combinations of cell types, but that were NOT included in the above section.  As written, this function requires *assumes that the `cell_set_label` is assigned using the specific format described above*.  If Option 2 was selected in the previous code block, all cell_set_labels must have the same prefix.  
   
 ```{r} 
 mapping <- cell_assignment_from_groups_of_cell_types(updated_nomenclature,cell_id,mapping)
