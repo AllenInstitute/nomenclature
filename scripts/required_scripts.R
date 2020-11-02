@@ -74,7 +74,7 @@ num_clusters    <- length(labels(dend))
 is_leaf         <- is.element(rownames(anno),labels(dend))
 anno$cluster_id <- 0
 #anno[labels(dend),"cluster_id"] <- 1:num_clusters  # Replaced with next line, which avoids error
-anno$cluster_id[rownames(anno) %in% labels(dend] <- 1:num_clusters   #replaces cluster_id=0 with sequential id
+anno$cluster_id[rownames(anno) %in% labels(dend)] <- 1:num_clusters   #replaces cluster_id=0 with sequential id
 anno[!is_leaf,"cluster_id"] <- (num_clusters+1):dim(anno)[1]
 cluster_id      <- anno$cluster_id
 
