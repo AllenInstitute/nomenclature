@@ -222,7 +222,16 @@ This file is the one just created above.  If needed change the link to the file 
   
 ```{r}
 # REPLACE THIS LINE OF CODE WITH CODE TO READ IN YOUR UPDATED NOMENCLATURE TABLE, IF NEEDED
-updated_nomenclature <- read.csv("nomenclature_table_MTG.csv")
+updated_nomenclature <- read.csv("data/nomenclature_table_MTG.csv")
+```
+  
+  
+Create an additional tag called `child_cell_set_accessions`, which is a "|"-separated character vector indicating all of the child set sets in the dendrogram (e.g., "provisional cell types", "leaves", or "terminal nodes").  This is calculated by using the `cell_set_label` tags and will help with integration into downstream ontology use cases.  
+  
+```{r}
+updated_nomenclature <- define_child_accessions(updated_nomenclature)
+# We then rewrite the table above, which should be identical, but with a new column for child cell sets
+write.csv(updated_nomenclature,"nomenclature_table_update.csv",row.names=FALSE)
 ```
   
   

@@ -153,6 +153,8 @@ list(cell_set_information = anno, initial_dendrogram = dend_start, updated_dendr
 ######################################################################################
 ## ADDITIONAL NOMENCLATURE FUNCTIONS
 
+
+
 update_dendrogram_with_nomenclature <- function(dend, cell_set_information, 
   current_label = "original_label", new_label = "cell_set_preferred_alias"){
 
@@ -195,6 +197,36 @@ cell_assignment_from_dendrogram <- function(dend,samples,cell_id,
   # Return results
   mapping
 }
+
+
+define_child_accessions <- function(nomenclature){
+  nomenclature <- as.data.frame(nomenclature)
+  nomenclature$child_cell_set_accessions = ""
+  for (i in 1:dim(nomenclature)[1]){
+    # Split out all the children in the cell_set_label
+    lab    = nomenclature$cell_set_label[i]
+	tax    = nomenclature$taxonomy_id[i]
+	prefix = strsplit(lab," ")[[1]][1]
+	suffix = gsub(prefix,"",lab)
+	suffix = gsub("-",":",suffix)
+	suffix = eval(parse(text=paste("try({c(",suffix,")},silent=TRUE)")))
+	if(class(suffix)=="try-error") suffix = 0
+	
+	# Allow for different numbers of leading 0s
+	suffix1  <- suffix
+	for (j in 1:10) suffix <- c(suffix1,paste("0",suffix,sep=""))
+    children <- intersect(nomenclature$cell_set_label,paste(prefix,suffix))
+	
+	# Convert to cell_set_accessions and save
+	children <- nomenclature$cell_set_accession[is.element(nomenclature$cell_set_label,children)&
+	            (nomenclature$taxonomy_id==tax)]
+	children <- setdiff(children,nomenclature$cell_set_accession[i])
+	if(length(children)>1)
+	  nomenclature$child_cell_set_accessions[i] <- paste(children,collapse="|")
+  }
+  nomenclature
+}
+
 
 
 
