@@ -1,0 +1,153 @@
+---
+title: "Convert to Allen Institute Cell Type Taxonomy Service (CTTS)"
+output: html_notebook
+---
+
+This script takes standard output files form the Common Cell type Nomenclature (CCN) and converts them to the format required for input into the Allen Institute Cell Type Taxonomy Service (CTTS).  It takes as input the `cell_to_cell_set_assignments.csv` and `nomenclature_table.csv` files, but does not use any of the dendrogram files (to allow for non-hierarchical cell type structure).  
+
+
+# Workspace setup
+  
+```{r setup}
+# NOTE: REPLACE THIS LINK BELOW WITH YOUR WORKING DIRECTORY
+outputFolder = "\\\\allen/programs/celltypes/workgroups/hct/cellTaxonomy/nomenclature/mouse_m1_miniatlas/convert_to_CTTS/"
+
+setwd(outputFolder)                           # Needed only if copying and pasting in R
+knitr::opts_chunk$set(echo = TRUE)            # Needed only for RStudio
+knitr::opts_knit$set(root.dir = outputFolder) # Needed only for RStudio
+```
+  
+  
+### Load required libraries  
+  
+```{r}
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(dendextend)
+  library(ggplot2)
+  library(data.table)
+  library(jsonlite)  # optional
+})
+```
+  
+  
+### Load the accessory scripts  
+  
+This file includes all of the scripts that are required for the CCN, and is well-annotated.  Make sure you reference the scripts subfolder if needed.  
+  
+```{r}
+source("convert_to_CTTS.r")  # Additional required files
+options(stringsAsFactors = FALSE)
+```
+  
+  
+### Read in the relevant tables
+  
+Read in the `cell_to_cell_set_assignments.csv` and `nomenclature_table.csv` files for conversion.  
+  
+```{r}
+nomenclature <- read.csv("nomenclature_table_CCN202002013.csv")
+mappingIn    <- fread("cell_to_cell_set_assignments_CCN202002013.csv")
+mapping      <- as.matrix(as.data.frame(mappingIn[,2:dim(mappingIn)[2]]))
+samples      <- rownames(mapping) <- mappingIn$sample_name
+```
+  
+  
+# Define and output required files
+  
+Four csv files are required for batch upload of a taxonomy to the 
+1) Sample.csv: This file lists the mapping of cells to cell sets in a specific format (e.g., it is a reformatting of cell_to_cell_set_assignments with some additional metadata) 
+2) CellSet.csv:  This file lists information about the preferred aliases (or initial cluster assignments) of each cell set (e.g., one row per cell set) 
+3) CellSetToCellSet.csv:
+4) CellSetToCellTypeAlias.csv:
+  
+Note: Prior to running this code a `DataSet` and `CellTypeTaxonomy` need to be defined using the CTTS API.   
+  
+First, let's define the sample.csv.  Note that Uri's for each sample are required, but that we can use fake ones until real ones exist.  Also note that preferred aliases need to be unique, so we will set the preferred alias as part of the cell set accession ID in combination with the existing preferred alias or (if missing) the lowest ancestor's preferred alias.
+  
+```{r}
+# Variable preparation
+dataset <- "M1_mouse_miniatlas"
+uri <- paste0("http://fakeurl-",samples,".data")
+ExternalId <- NULL # If there is a second name for a sample, you can put it here
+
+# Variable assignment
+preferredAlias <- make_preferred_alias_unique(nomenclature)
+
+# Define the Sample.csv
+sampleCsv <- make_sample_csv(mapping, uri, dataset, nomenclature$cell_set_accession, 
+                             preferredAlias, ExternalId)
+
+# Write the Sample.csv file
+fwrite(sampleCsv,"Sample.csv")
+```
+   
+   
+Second, lets define the CellSet.csv file.  Note that for the CTTS the `AliasAssignedBy` is intended to be an e-mail address rather than a person's name.  Also recall that the `CellTypeTaxonomy` variable has to be defined ahead of time in the CTTS, which means that this value goes into the `TaxonomyAccessionID` and that that taxonomy_id defined in the CCN **is not used**.  This is not ideal but is the current state of things.  There is also a distinction in the CTTS of cell type and cell set.  In this case we are going to manually assign the cell types as the leaf nodes of the tree (which in this case is all the cell set with no children cell sets).
+   
+```{r}
+# Variable preparation
+TaxonomyAccessionID <- "CCN202012110"
+translate_assignee  <- 
+  setNames(c("zizheny@alleninstitute.org","nik.jorstad@alleninstitute.org","scala@bcm.edu"),
+           c("Zizhen Yao","Nikolas Jorstad","Federico Scala"))
+
+# Variable assignment
+isCellType <- nomenclature$child_cell_set_accessions==""  # TRUE= cell type; FALSE = cell set for CTTS
+first_assignee <- split_column(nomenclature,"cell_set_alias_assignee")[,1]
+first_citation <- split_column(nomenclature,"cell_set_alias_citation")[,1]
+
+# Define the CellSet.csv
+CellSetCsv <- data.frame(
+  Class = c("CellSet","CellType")[isCellType+1],
+  PreferredAlias = preferredAlias,
+  AliasAssignedBy = as.character(translate_assignee[first_assignee]),
+  AliasCitation = first_citation,
+  TaxonomyAccessionID = TaxonomyAccessionID,
+  ExternalId = nomenclature$cell_set_accession
+)
+
+# Write the CellSet.csv file
+fwrite(CellSetCsv,"CellSet.csv")
+```
+   
+   
+Third, let's define the CellSetToCellSet.csv file.  This file reconstructs the hierarchical structure of the data set (if any) in a table form.  **This script uses the child_cell_set_accessions column in the nomenclature and does not require the dendrogram.**  The reason for this is to capture parent nodes of cell types that don't obey a heirarchy.  By definition the parent node is node with the fewest children that contains a cell set (or all it's children). 
+  
+```{r}
+# Define the cell set family structure
+cellSetFamily <- find_cell_set_family(preferredAlias, nomenclature)
+
+# Write the CellSet_csv file
+fwrite(cellSetFamily,"CellSetToCellSet.csv")
+```
+  
+  
+Fourth, we construct the CellSetToCellTypeAlias.csv file.  This assigns all cell set aliases except for the preferred alias (which was already assigned in the CellSet.csv above) and the aligned alias, which gets assigned separately in the API for some reason.  This also assigns the cell set labels as aliases since there is no separate slot for them, with the assignee being the CCN  
+  
+```{r} 
+# Define cellSetAliases_csv
+cellSetAliases <- retrieve_alias_information(preferredAlias,nomenclature)
+
+# Convert authors to e-mail addresses as above
+translate_assignee["CCN"] = "CCN"
+cellSetAliases[,"AliasAssignedBy"] = as.character(translate_assignee[cellSetAliases[,"AliasAssignedBy"]])
+
+# Write cellSetAliases.csv
+fwrite(cellSetAliases,"CellSetToCellTypeAlias.csv")
+```    
+ 
+  
+Finally, create a manifest file for these four csv files above and save them as a zip file for upload to AWS.  
+  
+```{r}
+create_zip_archive("mouse_m1_miniatlas.zip")  # Optional filename
+```
+
+  
+Session info.  
+  
+```{r} 
+sessionInfo()
+``` 
+  
