@@ -63,27 +63,7 @@ Four csv files are required for batch upload of a taxonomy to the
   
 Note: Prior to running this code a `DataSet` and `CellTypeTaxonomy` need to be defined using the CTTS API.   
   
-First, let's define the sample.csv.  Note that Uri's for each sample are required, but that we can use fake ones until real ones exist.  Also note that preferred aliases need to be unique, so we will set the preferred alias as part of the cell set accession ID in combination with the existing preferred alias or (if missing) the lowest ancestor's preferred alias.
-  
-```{r}
-# Variable preparation
-dataset <- "M1_mouse_miniatlas"
-uri <- paste0("http://fakeurl-",samples,".data")
-ExternalId <- NULL # If there is a second name for a sample, you can put it here
-
-# Variable assignment
-preferredAlias <- make_preferred_alias_unique(nomenclature)
-
-# Define the Sample.csv
-sampleCsv <- make_sample_csv(mapping, uri, dataset, nomenclature$cell_set_accession, 
-                             preferredAlias, ExternalId)
-
-# Write the Sample.csv file
-fwrite(sampleCsv,"Sample.csv")
-```
-   
-   
-Second, lets define the CellSet.csv file.  Note that for the CTTS the `AliasAssignedBy` is intended to be an e-mail address rather than a person's name.  Also recall that the `CellTypeTaxonomy` variable has to be defined ahead of time in the CTTS, which means that this value goes into the `TaxonomyAccessionID` and that that taxonomy_id defined in the CCN **is not used**.  This is not ideal but is the current state of things.  There is also a distinction in the CTTS of cell type and cell set.  In this case we are going to manually assign the cell types as the leaf nodes of the tree (which in this case is all the cell set with no children cell sets).
+First, lets define the CellSet.csv file.  Note that for the CTTS the `AliasAssignedBy` is intended to be an e-mail address rather than a person's name.  Also recall that the `CellTypeTaxonomy` variable has to be defined ahead of time in the CTTS, which means that this value goes into the `TaxonomyAccessionID` and that that taxonomy_id defined in the CCN **is not used**.  This is not ideal but is the current state of things.  There is also a distinction in the CTTS of cell type and cell set.  In this case we are going to manually assign the cell types as the leaf nodes of the tree (which in this case is all the cell set with no children cell sets).  Finally, we note that preferred aliases need to be unique, so we will set the preferred alias as part of the cell set accession ID in combination with the existing preferred alias or (if missing) the lowest ancestor's preferred alias. 
    
 ```{r}
 # Variable preparation
@@ -93,7 +73,8 @@ translate_assignee  <-
            c("Zizhen Yao","Nikolas Jorstad","Federico Scala"))
 
 # Variable assignment
-isCellType <- nomenclature$child_cell_set_accessions==""  # TRUE= cell type; FALSE = cell set for CTTS
+preferredAlias <- make_preferred_alias_unique(nomenclature)
+isCellType     <- nomenclature$child_cell_set_accessions==""  # TRUE= cell type; FALSE = cell set for CTTS
 first_assignee <- split_column(nomenclature,"cell_set_alias_assignee")[,1]
 first_citation <- split_column(nomenclature,"cell_set_alias_citation")[,1]
 
@@ -112,6 +93,25 @@ fwrite(CellSetCsv,"CellSet.csv")
 ```
    
    
+Second, let's define the sample.csv.  Note that Uri's for each sample are required, but that we can use fake ones until real ones exist.  Also note that in the current iteration of the CTTS each sample can only be represented once, so we are only including mapping to cell types (e.g., leaf nodes).
+  
+```{r}
+# Variable preparation
+dataset    <- "M1_mouse_miniatlas"
+uri        <- paste0("http://fakeurl-",samples,".data")
+ExternalId <- NULL # If there is a second name for a sample, you can put it here
+
+# Variable assignment
+useIds     <- nomenclature$cell_set_accession[isCellType]
+
+# Define the Sample.csv
+sampleCsv  <- make_sample_csv(mapping, uri, dataset, nomenclature$cell_set_accession, 
+                             preferredAlias, ExternalId, useIds)
+# Write the Sample.csv file
+fwrite(as.data.frame(sampleCsv),"Sample.csv")
+```
+   
+  
 Third, let's define the CellSetToCellSet.csv file.  This file reconstructs the hierarchical structure of the data set (if any) in a table form.  **This script uses the child_cell_set_accessions column in the nomenclature and does not require the dendrogram.**  The reason for this is to capture parent nodes of cell types that don't obey a heirarchy.  By definition the parent node is node with the fewest children that contains a cell set (or all it's children). 
   
 ```{r}
@@ -119,7 +119,7 @@ Third, let's define the CellSetToCellSet.csv file.  This file reconstructs the h
 cellSetFamily <- find_cell_set_family(preferredAlias, nomenclature)
 
 # Write the CellSet_csv file
-fwrite(cellSetFamily,"CellSetToCellSet.csv")
+fwrite(as.data.frame(cellSetFamily),"CellSetToCellSet.csv")
 ```
   
   
@@ -134,14 +134,14 @@ translate_assignee["CCN"] = "CCN"
 cellSetAliases[,"AliasAssignedBy"] = as.character(translate_assignee[cellSetAliases[,"AliasAssignedBy"]])
 
 # Write cellSetAliases.csv
-fwrite(cellSetAliases,"CellSetToCellTypeAlias.csv")
+fwrite(as.data.frame(cellSetAliases),"CellSetToCellTypeAlias.csv")
 ```    
  
   
 Finally, create a manifest file for these four csv files above and save them as a zip file for upload to AWS.  
   
 ```{r}
-create_zip_archive("mouse_m1_miniatlas.zip")  # Optional filename
+create_zip_archive("mouse_m1_miniatlas")  # Optional zip and manifest file prefix
 ```
 
   

@@ -9,7 +9,7 @@ make_preferred_alias_unique <- function(nomenclature){
   label <- gsub(paste0(gsub("CCN","CS",nomenclature$taxonomy_id[1]),"_"),"", 
                 nomenclature$cell_set_accession)
   
-  preferred_alias <- NULL
+  preferredAlias <- NULL
   for (i in 1:length(preferred_alias_in)) {
     y <- unique(children[i,])
     isDescendent <- apply(children,1,function(x,y) lus(y)==lus(intersect(x,y)),y)
@@ -20,24 +20,25 @@ make_preferred_alias_unique <- function(nomenclature){
 	if(length(y)==1) kp = i  # To account for no children case
 	sa <- ifelse(i==kp[1],""," subset")
 	pa <- paste0(preferred_alias_in[kp[1]],sa," (",label[i],")")
-    preferred_alias <- c(preferred_alias,pa)
+    preferredAlias <- c(preferredAlias,pa)
   }
-  preferred_alias
+  preferredAlias
 }
 
 
-make_sample_csv <- function(mapping, uri, dataset, accession_id, 
-                            preferred_alias, ExternalId=NULL){
+make_sample_csv <- function(mapping, uri, dataset, accessionId, 
+                            preferredAlias, ExternalId=NULL,
+							useIds = accessionId){
   # This function returns a table of the correct format for sample.csv
   out <- NULL
-  mapping <- mapping[,accession_id]
-  for (i in 1:length(accession_id)){
+  mapping <- mapping[,accessionId]
+  for (i in 1:length(accessionId)) if(is.element(accessionId[i],useIds)){
     kp  <- mapping[,i]>0
     tmp <- data.frame(
 	  Name = rownames(mapping)[kp],
 	  Uri = uri[kp],
 	  DataSet = dataset,
-	  CellSetPreferredAlias = preferred_alias[i],
+	  CellSetPreferredAlias = preferredAlias[i],
 	  CellSetProbability = mapping[kp,i]
 	)
 	if(!is.null(ExternalId)) 
@@ -120,7 +121,7 @@ retrieve_alias_information <- function(preferredAlias,nomenclature){
 }
 
 
-create_zip_archive = function(filename = "cell_set_archive.zip"){
+create_zip_archive = function(prefix = "cell_set_archive"){
   # Make a manifest file
   manifest = '{
 "Sample": "Sample.csv",
@@ -128,12 +129,13 @@ create_zip_archive = function(filename = "cell_set_archive.zip"){
 "CellSetToCellSet": "CellSetToCellSet.csv",
 "CellSetToCellTypeAlias": "CellSetToCellTypeAlias.csv"
 }'
-  cat(manifest, file = "manifest.json")
+  manifestFile = paste0(prefix,"_manifest.json")
+  cat(manifest, file = manifestFile)
   
   # Add all relevant files to a zip file with desired filename
-  files = c("manifest.json","CellSetToCellSet.csv","CellSet.csv",
+  files = c(manifestFile,"CellSetToCellSet.csv","CellSet.csv",
             "CellSetToCellTypeAlias.csv","Sample.csv")
-  zip(filename, files=files)
+  zip(paste0(prefix,".zip"), files=files)
 }
 
 
