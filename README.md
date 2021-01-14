@@ -2,7 +2,7 @@
 
 ### Overview
 
-This repository contains code to generate the standardized **Common Cell type Nomenclature (CCN)** from an R "dendrogram", which will be presented in our manuscript soon to be resubmitted to eLife.  The initial version of the CCN is described in detail [on our website, here](https://portal.brain-map.org/explore/classes/nomenclature), with and updated version now available [on arXiv](https://arxiv.org/abs/2006.05406).  *This includes both the original version and the version resubmitted to eLife (as of 11/17/2020).* We will (hopefully) update our website once the CCN is finalized.  If you want to apply nomenclature of the format initially described, please use the initial release (not recommended).
+This repository contains code to generate the standardized **Common Cell type Nomenclature (CCN)** from an R "dendrogram", which will be presented in our manuscript soon to be resubmitted to eLife.  The initial version of the CCN is described in detail [on our website, here](https://portal.brain-map.org/explore/classes/nomenclature), with and updated version **now published [on eLife](https://elifesciences.org/articles/59928)**.  We will (hopefully) update our website once the CCN is finalized.  If you want to apply nomenclature of the format initially described, please use the initial release (not recommended).
 
 ### Application of CCN to a taxonomy
 
