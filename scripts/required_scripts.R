@@ -243,8 +243,9 @@ cell_assignment_from_groups_of_cell_types <- function(updated_nomenclature,cell_
   cell_type_labels <- missed_labels[is.element(missed_class,used_class)]
 
   ## Find the corresponding cell types for those cell sets
-  labsL <- list()
-  cs_digits <- max(1,nchar(dim(updated_nomenclature)[1]))
+  labsL     <- list()
+  nClusters <- sum(!(grepl(",",updated_nomenclature$cell_set_label)|grepl("-",updated_nomenclature$cell_set_label)))
+  cs_digits <- max(1,nchar(nClusters))
   if (length(missed_labels)>0){
     for (i in 1:length(missed_labels)){
       m <- eval(parse(text=paste("c(",gsub("-",":",gsub(missed_class[i],"",missed_labels[i])),")")))
