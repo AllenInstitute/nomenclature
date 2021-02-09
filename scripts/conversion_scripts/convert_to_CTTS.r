@@ -73,6 +73,12 @@ split_column <- function(nomenclature, column_name, split_char = "\\|", expand=F
 	  }
 	}
   }
+	    
+  # Convert to two column matrix if a vector for downstream use
+  out <- t(t(out))
+  if(dim(out)[2]==1)
+   out <- cbind(out,out)
+	  
   # --- Return results
   out
 }
