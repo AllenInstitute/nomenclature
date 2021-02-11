@@ -45,7 +45,7 @@ make_sample_csv <- function(mapping, uri, dataset, accessionId,
 	  tmp$ExternalId = ExternalId[kp]
 	out <- rbind(out,tmp)
   }
-  if(!is.element(colnames(out),"ExternalId"))
+  if(!is.element("ExternalId",colnames(out)))
     out$ExternalId = 1:dim(out)[1]
   rownames(out) = NULL
   cn = c("ExternalId","Name","Uri","DataSet","CellSetPreferredAlias",
