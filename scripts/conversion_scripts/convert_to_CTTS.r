@@ -31,13 +31,15 @@ make_sample_csv <- function(mapping, uri, dataset, accessionId,
 							useIds = accessionId){
   # This function returns a table of the correct format for sample.csv
   out <- NULL
+  if (length(dataset)==1)  # -- Allow for multiple datasets
+    dataset = rep(dataset, length(uri))
   mapping <- mapping[,accessionId]
   for (i in 1:length(accessionId)) if(is.element(accessionId[i],useIds)){
     kp  <- mapping[,i]>0
     tmp <- data.frame(
 	  Name = rownames(mapping)[kp],
 	  Uri = uri[kp],
-	  DataSet = dataset,
+	  DataSet = dataset[kp],
 	  CellSetPreferredAlias = preferredAlias[i],
 	  CellSetProbability = mapping[kp,i]
 	)
