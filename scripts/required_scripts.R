@@ -340,7 +340,7 @@ plot_dend <- function (dend, dendro_data = NULL, node_size = 1, r = c(-0.1, 1))
 
 overwrite_dend_node_labels <- function (dend, n = 1, lab = labels(dend)) 
 {
-    if (!is.element(attr(dend, "label"),lab)) {
+    if ((!is.element(attr(dend, "label"),lab))|(length(dend) == 1)) {
         attr(dend, "label") = paste0("n", n)
         n = n + 1
     }
