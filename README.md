@@ -10,7 +10,7 @@ This repository contains code to generate the standardized **Common Cell type No
 
 Please visit [the Cell Taxonomy category of our community forum](https://community.brain-map.org/c/cell-taxonomies) to provide suggestions about the CCN itself.
 
-**We are currently saving used taxonomy_id [IN THIS TABLE](https://docs.google.com/spreadsheets/d/10gYNyOhc0YHOYKjgsvLfumf65CqLeiVDCE3Wrxz4Txo/edit?usp=sharing).  Please choose a unique one and update the table accordingly if you use the CCN.**  A cell type taxonomy service is currently under construction at the Allen Institute, which will will replace this non-ideal system.  CCN output for several of the taxonomies in this table are included in [**Supplementary File 1**](https://github.com/AllenInstitute/nomenclature/raw/master/data/Supplementary_File_1_from_Miller_et_al_2020.zip) from [our paper on arXiv](https://arxiv.org/abs/2006.05406).
+**We are currently saving used taxonomy_id [IN THIS TABLE](https://docs.google.com/spreadsheets/d/10gYNyOhc0YHOYKjgsvLfumf65CqLeiVDCE3Wrxz4Txo/edit?usp=sharing).  Please choose a unique one and update the table accordingly if you use the CCN.**  A cell type taxonomy service is currently under construction at the Allen Institute, which will will replace this non-ideal system.  CCN output for several of the taxonomies in this table are included in [**Supplementary File 1**](https://github.com/AllenInstitute/nomenclature/raw/master/data/Supplementary_File_1_from_Miller_et_al_2020.zip) from [our paper on eLife](https://elifesciences.org/articles/59928).
 
 ### Conversions to other formats
 
