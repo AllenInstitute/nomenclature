@@ -103,7 +103,7 @@ first_label <- first_label[intersect(labels(dend),names(first_label))]
 labs <- c(which(is.element(labels(dend),names(first_label))),num_clusters+1)
 for (i in 1:length(first_label)){
   lb  <- labs[i]:(labs[i+1]-1)
-  num <-   substr(10^cs_digits+anno[is_leaf,]$cluster_id[lb]-labs[i]+1,2,100)
+  num <- substr(10^cs_digits+anno[is_leaf,]$cluster_id[lb]-labs[i]+1,2,100)
   anno[is_leaf,]$cell_set_label[lb] <- paste(first_label[i],num)
 }
 
@@ -152,8 +152,6 @@ list(cell_set_information = anno, initial_dendrogram = dend_start, updated_dendr
 
 ######################################################################################
 ## ADDITIONAL NOMENCLATURE FUNCTIONS
-
-
 
 update_dendrogram_with_nomenclature <- function(dend, cell_set_information, 
   current_label = "original_label", new_label = "cell_set_preferred_alias"){
@@ -229,7 +227,6 @@ define_child_accessions <- function(nomenclature){
 
 
 
-
 cell_assignment_from_groups_of_cell_types <- function(updated_nomenclature,cell_id,mapping){
 
   ## Determine the relevant cell sets to annotate 
@@ -271,8 +268,93 @@ cell_assignment_from_groups_of_cell_types <- function(updated_nomenclature,cell_
 }
 
 
+annotate_nomenclature_from_metadata <- function(cell_set_information, metadata, metadata_columns, 
+                                                metadata_order = NULL,
+                                                annotation_columns = rep("cell_set_preferred_alias",length(metadata_columns)),
+                                                cluster_column = "cluster_label",
+                                                append = TRUE) 
+{
+  # Set up some variables and do some input checks
+  cell_set_information <- as.data.frame(cell_set_information)
+  if(length(metadata_order)!=length(metadata_columns)){
+    metadata_order <- rep("none",length(metadata_columns))
+  }
+  names(metadata_order) <- names(annotation_columns) <- metadata_columns
+  metadata_columns <- intersect(metadata_columns,colnames(metadata))
+  if(length(metadata_columns)==0){
+    print("No valid columns input. Returning inputted cell_set_information.")
+    return(cell_set_information)
+  }
+  metadata_order <- metadata_order[metadata_columns]
+  annotation_columns <- annotation_columns[metadata_columns]
+  if(length(setdiff(annotation_columns,colnames(cell_set_information)))>0){
+    print("At least one annotation_column is invalid.  Please correct and try again.")
+    return(cell_set_information)
+  }
+  
+  # Run the script for each value column
+  for (column in metadata_columns){
+    print(paste("Updating table for",column))
+    annotations <- sort(unique(metadata[,column]))
+    ord <- as.character(metadata_order[column])
+    if((ord!="none")&is.element(ord,colnames(metadata))){
+      annotations <- metadata[match(sort(unique(metadata[,ord])),metadata[,ord]),column]
+    }
+    for (ann in annotations){
+      cls  <- metadata[,cluster_column][metadata[,column]==ann]
+      labs <- cell_set_information$cell_set_label[is.element(cell_set_information$cell_set_preferred_alias,cls)]
+      lab  <- merge_cell_set_labels(labs)
+      
+      # Create cell set, if needed
+      if(!is.element(lab,cell_set_information$cell_set_label)){
+        newInfo <- head(cell_set_information,1)
+        max <- max(as.numeric(as.character(lapply(cell_set_information$cell_set_accession, function(x) strsplit(x,"_")[[1]][2]))))
+        newInfo$cell_set_accession       <- paste(strsplit(newInfo$cell_set_accession,"_")[[1]][1],max+1,sep="_")
+        newInfo$cell_set_label           <- lab
+        newInfo$cell_set_preferred_alias <- ann
+        keepCols <- c("cell_set_accession","cell_set_label","cell_set_structure","cell_set_ontology_tag",
+                      "cell_set_alias_assignee","cell_set_alias_citation","taxonomy_id")
+        newInfo[,setdiff(colnames(newInfo),keepCols)] <- ""
+        cell_set_information <- rbind(cell_set_information,newInfo)
+      }
+      
+      # Add information to cell set
+      ann2 <- cell_set_information[which(cell_set_information$cell_set_label==lab)[1],annotation_columns[column]]
+      if (!((nchar(ann2)>0)&(!append))){
+       ann2 <- paste(ann2,ann,sep="|")
+       if(substr(ann2,1,1)=="|") ann2 <- substr(ann2,2,nchar(ann2))
+       cell_set_information[which(cell_set_information$cell_set_label==lab)[1],annotation_columns[column]] <- ann2
+      }
+    }
+  }
+  cell_set_information
+}
+
+
 ######################################################################################
 ## Support functions
+
+merge_cell_set_labels <- function(cell_set_label_vector, sep=" "){
+  if(length(cell_set_label_vector)==1) return(cell_set_label_vector)
+  labs <- as.character(cell_set_label_vector)
+  name <- as.character(unclass(sapply(labs, function(x) strsplit(x,sep)[[1]][1])))
+  nums <- as.character(unclass(sapply(labs, function(x) strsplit(x,sep)[[1]][2])))
+  ints <- setNames(as.numeric(nums),nums)
+  
+  val <- NULL
+  for (clas in unique(name)){
+    int2 <- sort(ints[name==clas])
+    seqs <- c(FALSE,int2[1:(length(int2)-1)]-int2[2:(length(int2))]==(-1))
+    seqs <- c(which(!seqs),length(seqs)+1)
+    out <- paste(names(int2[unique(range(seqs[1]:(seqs[2]-1)))]),collapse="-")
+    if(length(seqs)>2) for (i in 2:(length(seqs)-1)){
+      out <- c(out,paste(names(int2[unique(range(seqs[i]:(seqs[(i+1)]-1)))]),collapse="-"))
+    }
+    val <- c(val,paste(clas, paste(out,collapse=", ")))
+  }
+  val <- paste(val,collapse = "/")
+  return(val)
+}
 
 get_dendrogram_value <- function(dend,value, sep=" "){
   labs <- as.character(value[labels(dend)])
