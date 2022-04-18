@@ -58,7 +58,13 @@ make_sample_csv <- function(mapping, uri, dataset, accessionId,
 
 split_column <- function(nomenclature, column_name, split_char = "\\|", expand=FALSE){
   # This function splits a column in the nomenclature table by a defined character
+  # --- Return the original column if it was blank
+  nomenclature[is.na(nomenclature[,column_name]),column_name] = ""
+  if(max(nchar(nomenclature[,column_name]))==0) 
+    return (cbind(nomenclature[,column_name],nomenclature[,column_name]))
+	
   # --- Split out the values in the correct column
+  if(max(nchar(nomenclature[,column_name]))==0) return (out) 
   splitColumn = strsplit(nomenclature[,column_name],split_char)
   len <- -1
   for (i in 1:length(splitColumn)) len=max(len,length(splitColumn[[i]]))
@@ -76,7 +82,7 @@ split_column <- function(nomenclature, column_name, split_char = "\\|", expand=F
 	}
   }
 	    
-  # Convert to two column matrix if a vector for downstream use
+  # --- Convert to two column matrix if a vector for downstream use
   out <- t(t(out))
   if(dim(out)[2]==1)
    out <- cbind(out,out)
@@ -109,13 +115,16 @@ retrieve_alias_information <- function(preferredAlias,nomenclature){
   lus <- function(x) length(unique(setdiff(x,"")))
   assignees <- split_column(nomenclature,"cell_set_alias_assignee",expand=TRUE)
   citations <- split_column(nomenclature,"cell_set_alias_citation",expand=TRUE)
+  # For back-compatibility
+  colnames(nomenclature) <- gsub("cell_set_additional_aliases","cell_set_additional_alias",colnames(nomenclature))
   aliases   <- split_column(nomenclature,"cell_set_additional_alias")
   numAliases <- apply(aliases,1,lus)
   out <- NULL
   for (i in 1:length(numAliases)) if(numAliases[i]>=1) 
    for (j in 1:numAliases[i]){
     out <- rbind(out,c(preferredAlias[i],aliases[i,j],assignees[i,j+1],citations[i,j+1]))
-  }
+   }
+  if(is.null(out)) out <- matrix(0,0,4)
   colnames(out) <- c("CellSetPreferredAlias","AliasName","AliasAssignedBy","AliasCitation")
   
   # Get info for cell_set_labels and return both
