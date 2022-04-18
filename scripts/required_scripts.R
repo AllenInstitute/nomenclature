@@ -115,6 +115,7 @@ value <- get_cell_set_designation(dend,value)
 value[1] <- "All cells"
 anno$cell_set_label <- as.character(value)
 
+# merge_cell_set_labels
 
 ################################################################
 ## Append the cell_set_structure
@@ -135,6 +136,11 @@ anno <- anno[order(cluster_id),]
 anno$cell_set_alias_assignee <- paste0(taxonomy_author)
 anno$cell_set_alias_citation <- paste0(taxonomy_citation)
 anno$taxonomy_id             <- taxonomy_id
+
+# Move cell_set_label="All cells" to cell_set_preferred_alias
+anno$cell_set_preferred_alias[anno$cell_set_label=="All cells"] = "All cells"
+labNew <- merge_cell_set_labels(anno$cell_set_label[is.element(anno$cell_set_preferred_alias,labels(dend))])
+anno$cell_set_label[anno$cell_set_preferred_alias=="All cells"] = labNew
 
 ################################################################
 ## Update the dendrogram with this new information
@@ -355,6 +361,7 @@ merge_cell_set_labels <- function(cell_set_label_vector, sep=" "){
   val <- paste(val,collapse = "/")
   return(val)
 }
+
 
 get_dendrogram_value <- function(dend,value, sep=" "){
   labs <- as.character(value[labels(dend)])
