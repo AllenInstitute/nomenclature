@@ -6,19 +6,26 @@ This repository contains code to generate the standardized **Common Cell type No
 
 ### Application of CCN to a taxonomy
 
-#### To get started, download the `scripts` and `data` folders, and the follow the directions in `build_annotation_tables.rmd`.  An HTML version of this file is accessible **[AT THIS LINK - build_annotation_tables.nb.html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/build_annotation_tables.nb.html)**.
+#### To get started, download the `scripts` and `data` folders, and the follow the *UPDATED* directions in `build_annotation_tables_SEAAD.rmd`.  An HTML version of this file is accessible **[AT THIS LINK - build_annotation_tables_SEAAD.nb.html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/build_annotation_tables_SEAAD.nb.html)**.  
 
-Please visit [the Cell Taxonomy category of our community forum](https://community.brain-map.org/c/cell-taxonomies) to provide suggestions about the CCN itself.
+This version includes updates for: 
+1) Defining a standard CCN output (a zip file with key output files) 
+2) Automation of cell set annotation based on a metadata file to minimize manual steps
+3) Adding child cell set accessions for building ontologies 
+4) *Coming soon: CCN R package*
+5) *Coming soon: Single function application of CCN*
+
+The original files are still available in the scripts folder ([Link to original build_annotation_tables html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/build_annotation_tables.nb.html)).
+
+Please visit [the Cell Taxonomy category of our community forum](https://community.brain-map.org/c/cell-taxonomies) to provide suggestions about the CCN itself.  
 
 **We are currently saving used taxonomy_id [IN THIS TABLE](https://docs.google.com/spreadsheets/d/10gYNyOhc0YHOYKjgsvLfumf65CqLeiVDCE3Wrxz4Txo/edit?usp=sharing).  Please choose a unique one and update the table accordingly if you use the CCN.**  A cell type taxonomy service is currently under construction at the Allen Institute, which will will replace this non-ideal system.  CCN output for several of the taxonomies in this table are included in [**Supplementary File 1**](https://github.com/AllenInstitute/nomenclature/raw/master/data/Supplementary_File_1_from_Miller_et_al_2020.zip) from [our paper on eLife](https://elifesciences.org/articles/59928).
 
 ### Conversions to other formats
 
-The CCN is intended to be a standardized format for researchers to save taxonomies resulting from any cell typing study.  To facilitate ingest of these taxonomies into relevant databases and ontologies, we intend to provide conversion scripts (as available) from the CCN format to formats required by these external tools.  Currently, the following conversions are available:  
-1. **Allen Institute Cell Type Taxonomy Service (CTTS)**: This is a tool for saving taxonomies in a database that is *currently only available to Allen Institute employees*.  To convert to this format download the three "convert_to_CTTS" from [this folder](https://github.com/AllenInstitute/nomenclature/tree/master/scripts/conversion_scripts) and follow the identical directions in the [.Rmd](https://github.com/AllenInstitute/nomenclature/blob/master/scripts/conversion_scripts/convert_to_CTTS.rmd) or [.html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/conversion_scripts/convert_to_CTTS.nb.html) files.
-2. **Cell Annotation Platform (CAP)**: This is a tool being built as part of the Human Cell Atlas (HCA) for annotating taxonomies.  Scripts for injest into this service are in process.  Current content of CAP is available [here](http://celltype.info/).  
+The CCN is intended to be a standardized format for researchers to save taxonomies resulting from any cell typing study.  To facilitate ingest of these taxonomies into relevant databases and ontologies, we intend to provide conversion scripts (as available) from the CCN format to formats required by these external tools.  **f you would like to see scripts for conversions to other file formats, please email Jeremy Miller (jeremym _at_ alleninstitute _dot_ org).**
 
-If you would like to see scripts for conversions to other file formats, please email Jeremy Miller (jeremym _at_ alleninstitute _dot_ org).
+Currently conversions are available for the Allen Institute Cell Type Taxonomy Service (CTTS). This is a tool for saving taxonomies in a database that is *currently only available to Allen Institute employees*.  To convert to this format download the three "convert_to_CTTS" from [this folder](https://github.com/AllenInstitute/nomenclature/tree/master/scripts/conversion_scripts) and follow the identical directions in the [.Rmd](https://github.com/AllenInstitute/nomenclature/blob/master/scripts/conversion_scripts/convert_to_CTTS.rmd) or [.html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/conversion_scripts/convert_to_CTTS.nb.html) files.
 
 ### License
 
