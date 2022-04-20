@@ -23,7 +23,7 @@ Please visit [the Cell Taxonomy category of our community forum](https://communi
 
 ### Conversions to other formats
 
-The CCN is intended to be a standardized format for researchers to save taxonomies resulting from any cell typing study.  To facilitate ingest of these taxonomies into relevant databases and ontologies, we intend to provide conversion scripts (as available) from the CCN format to formats required by these external tools.  **f you would like to see scripts for conversions to other file formats, please email Jeremy Miller (jeremym _at_ alleninstitute _dot_ org).**
+The CCN is intended to be a standardized format for researchers to save taxonomies resulting from any cell typing study.  To facilitate ingest of these taxonomies into relevant databases and ontologies, we intend to provide conversion scripts (as available) from the CCN format to formats required by these external tools.  **If you would like to see scripts for conversions to other file formats, please email Jeremy Miller (jeremym _at_ alleninstitute _dot_ org).**
 
 Currently conversions are available for the Allen Institute Cell Type Taxonomy Service (CTTS). This is a tool for saving taxonomies in a database that is *currently only available to Allen Institute employees*.  To convert to this format download the three "convert_to_CTTS" from [this folder](https://github.com/AllenInstitute/nomenclature/tree/master/scripts/conversion_scripts) and follow the identical directions in the [.Rmd](https://github.com/AllenInstitute/nomenclature/blob/master/scripts/conversion_scripts/convert_to_CTTS.rmd) or [.html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/conversion_scripts/convert_to_CTTS.nb.html) files.
 
