@@ -6,14 +6,16 @@ This repository contains code to generate the standardized **Common Cell type No
 
 ### Application of CCN to a taxonomy
 
-#### To get started, download the `scripts` and `data` folders, and the follow the *UPDATED* directions in `build_annotation_tables_SEAAD.rmd`.  An HTML version of this file is accessible **[AT THIS LINK - build_annotation_tables_SEAAD.nb.html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/build_annotation_tables_SEAAD.nb.html)**.  
+To get started, download the `scripts` and `data` folders, and the follow the *UPDATED* directions in `build_annotation_tables_SEAAD.rmd`.  An HTML version of this file is accessible **[AT THIS LINK](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/build_annotation_tables_SEAAD.nb.html)**.  
+  
+**----You can also install the NEW [CCN R Package](https://github.com/AllenInstitute/CCN/)----**.  
 
 This version includes updates for: 
 1) Defining a standard CCN output (a zip file with key output files) 
 2) Automation of cell set annotation based on a metadata file to minimize manual steps
 3) Adding child cell set accessions for building ontologies 
-4) *Coming soon: CCN R package*
-5) *Coming soon: Single function application of CCN*
+4) [CCN R Package](https://github.com/AllenInstitute/CCN/)
+5) **Single function application of CCN - Beta version now available in the [CCN R Package](https://github.com/AllenInstitute/CCN/)**
 
 The original files are still available in the scripts folder ([Link to original build_annotation_tables html](http://htmlpreview.github.io/?https://github.com/AllenInstitute/nomenclature/blob/master/scripts/build_annotation_tables.nb.html)).
 
